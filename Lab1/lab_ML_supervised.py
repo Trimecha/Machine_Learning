@@ -37,7 +37,8 @@ def rand_bi_gauss(n1=100,n2=100,mu1=[1,1],mu2=[-1,-1],sigma1=[0.1,0.1],
     ex2=rand_gauss(n2,mu2,sigma2)
     res=np.vstack([np.hstack([ex1,np.transpose(np.ones([1,n1]))]),
     np.hstack([ex2,np.transpose(-1*np.ones([1,n2]))])])
-    ind=range(res.shape[0])
+    #ind=range(res.shape[0]) # Python 2.*
+    ind=np.arange(res.shape[0])# Python 3.*
     np.random.shuffle(ind)
     return np.array(res[ind,:])
 
@@ -49,16 +50,17 @@ def rand_clown(n1=100,n2=100,epsilon1=1,epsilon2=2):
     x0=np.random.randn(n1)
     x1=x0*x0+epsilon1*np.random.randn(n1)
     x2=np.vstack([epsilon2*np.random.randn(n2),np.transpose(
-        epsilon2*np.random.randn(n2)+[2]*n2)])
+        epsilon2*np.random.randn(n2)+[2]*n2)]) # transpose is useless since it's a 1-d array
     res=np.transpose(np.hstack([np.vstack([[x0,x1],np.ones([1,n1])]),
                       np.vstack([x2,-1*np.ones([1,n2])])]))
-    ind=range(res.shape[0])
+    #ind=range(res.shape[0])# Python 2.*
+    ind=np.arange(res.shape[0]) # Python 3.*
     np.random.shuffle(ind)
     return np.array(res[ind,:])
 
 def rand_checkers(n1=100,n2=100,epsilon=0.1):
     """ Sample n1 and n2 points from a noisy checker"""
-    nbp=int(np.floor(n1/8))
+    nbp=int(np.floor(n1/8)) 
     nbn=int(np.floor(n2/8))
     xapp=np.reshape(np.random.rand((nbp+nbn)*16),[(nbp+nbn)*8,2])
     yapp=[1]*((nbp+nbn)*8)
@@ -73,7 +75,8 @@ def rand_checkers(n1=100,n2=100,epsilon=0.1):
             xapp[idx:(idx+nb),0]=np.random.rand(nb)+i+epsilon*np.random.randn(nb)
             xapp[idx:(idx+nb),1]=np.random.rand(nb)+j+epsilon*np.random.randn(nb)
             idx=idx+nb
-    ind=range((nbp+nbn)*8)
+    #ind=range((nbp+nbn)*8)# Python 2.*
+    ind=np.arange((nbp+nbn)*8) # Python 3.*
     np.random.shuffle(ind)
     res= np.hstack([xapp,np.transpose(np.matrix(yapp))])
     return np.array(res[ind,:])
@@ -106,13 +109,15 @@ def plot_2d(data,y=None,w=None,alpha_choice=1):
     #Compute index by class depending on y value
     if (y!=None): 
         labs=np.unique(y)
-        idxbyclass=[ np.where(y==labs[i])[0] for i in xrange(len(labs))]
+        #idxbyclass=[ np.where(y==labs[i])[0] for i in xrange(len(labs))]# Python 2.*
+        idxbyclass=[ np.where(y==labs[i])[0] for i in range(len(labs))] # Python 3.*
     else :
         labs=[""]
         idxbyclass=[range(data.shape[0])]
 
     #Plot ...
-    for i in xrange(len(labs)):
+    #for i in xrange(len(labs)):# Python 2.* 
+    for i in range(len(labs)): # Python 3.*
         plt.plot(data[idxbyclass[i],0],data[idxbyclass[i],1],'+',
 			color=collist[i%len(collist)],ls='None',
                  marker=symlist[i%len(symlist)])
